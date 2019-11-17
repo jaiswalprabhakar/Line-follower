@@ -35,14 +35,14 @@ dir 2 - stop
 dir 3 - rev
 
 */
-int set_motor(int type,int dir){
+void set_motor(int type,int dir){
 	if(type == 1){ // -------------- LEft Motor --------------------
 		if(dir == 1){ // Forward Direction [ Left Motor ]
 			
 			left_motor_line1 = 1;
 			left_motor_line2 = 0;
 			
-			PORTA = 0b10100000;
+			PORTA |= 0b10000000;
 			
 		}
 		
@@ -50,33 +50,36 @@ int set_motor(int type,int dir){
 			
 			left_motor_line1 = 0;
 			left_motor_line2 = 0;
-			PORTA = 0b00000000;
+			PORTA |= 0b00000000;
 		}
 		
 		if(dir == 3){ // Reverse Direction [ Left Motor ]
 			
 			left_motor_line1 = 0;
 			left_motor_line2 = 1;
-			PORTA = 0b01010000;
+			PORTA = 0b01000000;
 			}
 	}else{ // -------------- Right Motor ------------------
 		if(dir == 1){ // Forward Right Motor
 			
 			right_motor_line1 = 1;
 			right_motor_line2 = 0;
-			
-			PORTA
+			PORTA |= 0b00100000;
+		
 		}
 		
 		if(dir == 2){ // Stop Motor
 			
 			right_motor_line1 = 0;
 			right_motor_line2 = 0;
+			PORTA = 0b00000000;
 		}
 		if(dir == 3){ // Reverse Motor
 			
 			right_motor_line1 = 0;
 			right_motor_line2 = 1;
+			
+			PORTA = 0b00010000;
 			
 		}
 	}
@@ -101,6 +104,9 @@ int get_motor_state(int ir1,int ir2,int ir3,int ir4,int ir5){
 	||	(ir1 == 1 || ir2 == 1 || ir3 == 1 || ir4 == 1 || ir5 == 0)||(ir1 == 1|| ir2 == 1|| ir3 == 1 || ir4 == 1 || ir5 == 1)
 	)
 		return 5;
+		
+	else
+		return 10;
 	
 }
 
@@ -108,8 +114,8 @@ int get_motor_state(int ir1,int ir2,int ir3,int ir4,int ir5){
 int main(void)
 {
    
-   DDRA = 0b11110000;
-   DDRD = 0b01111100;
+   DDRA = 0b11110000;//output(last four pins of A)
+   DDRD = 0b01111100;//input (sensor)
    
    
 
