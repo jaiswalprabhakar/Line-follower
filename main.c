@@ -104,10 +104,8 @@ int get_motor_state(int ir1,int ir2,int ir3,int ir4,int ir5){
 	||	(ir1 == 1 || ir2 == 1 || ir3 == 1 || ir4 == 1 || ir5 == 0)||(ir1 == 1|| ir2 == 1|| ir3 == 1 || ir4 == 1 || ir5 == 1)
 	)
 		return 5;
-		
-	else
+	else 
 		return 10;
-	
 }
 
 
@@ -124,16 +122,12 @@ int main(void)
 		
 		int interpret = 0;
 			// Getting Current State of Each IR Sensor
-		if(bit_is_set(PIND,2))
-			ir1 = 1;
-		if(bit_is_set(PIND,3))
-			ir2 = 1;
-		if(bit_is_set(PIND,4))
-			ir3 = 1;
-		if(bit_is_set(PIND,5))
-			ir4 = 1;
-		if(bit_is_set(PIND,6))
-			ir5 = 1;
+		
+	    	ir1 = bit_is_set(PIND,2);
+		ir2 = bit_is_set(PIND,3);
+	    	ir3 = bit_is_set(PIND,4);
+		ir4 = bit_is_set(PIND,5);
+		ir5 = bit_is_set(PIND,6);
 		
 		// Now Checking Logic for Vehicle Running Setup
 		interpret = get_motor_state(ir1,ir2,ir3,ir4,ir5);
