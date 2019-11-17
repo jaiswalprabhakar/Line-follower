@@ -9,13 +9,14 @@
 #include <avr/sfr_defs.h>
 
 
-int ir1=0,ir2=0,ir3=0,ir4=0,ir5=0;
+int ir1,ir2,ir3,ir4,ir5;
 int left_motor_line1 = 0;
 int left_motor_line2 = 0;
 int right_motor_line1 = 0;
 int right_motor_line2 = 0;
 
-
+const int true = 1;
+const int false = 0;
 /* 
 	0 - Straight 
 	1 - Sharp Left
@@ -34,7 +35,9 @@ dir 1 - forward
 dir 2 - stop
 dir 3 - rev
 
-*/
+*/ 
+
+/*  ---- ONLY FOR IR Sensor ----  */
 void set_motor(int type,int dir){
 	if(type == 1){ // -------------- LEft Motor --------------------
 		if(dir == 1){ // Forward Direction [ Left Motor ]
@@ -57,7 +60,7 @@ void set_motor(int type,int dir){
 			
 			left_motor_line1 = 0;
 			left_motor_line2 = 1;
-			PORTA = 0b01000000;
+			PORTA |= 0b01000000;
 			}
 	}else{ // -------------- Right Motor ------------------
 		if(dir == 1){ // Forward Right Motor
@@ -72,14 +75,14 @@ void set_motor(int type,int dir){
 			
 			right_motor_line1 = 0;
 			right_motor_line2 = 0;
-			PORTA = 0b00000000;
+			PORTA |= 0b00000000;
 		}
 		if(dir == 3){ // Reverse Motor
 			
 			right_motor_line1 = 0;
 			right_motor_line2 = 1;
 			
-			PORTA = 0b00010000;
+			PORTA |= 0b00010000;
 			
 		}
 	}
@@ -88,24 +91,27 @@ void set_motor(int type,int dir){
 	
 }
 int get_motor_state(int ir1,int ir2,int ir3,int ir4,int ir5){
-	if(ir1 == 0 || ir2 == 0 || ir3 == 1 || ir4 == 0 || ir5 == 0)
+
+	if(ir1 == false || ir2 == false || ir3 == true || ir4 == false || ir5 == false)
 		return 0; // 0 - means Straight Path
-	if(ir1 == 1 || ir2 == 1 || ir3 == 1 || ir4 == 0 || ir5 == 0)
+	if(ir1 == true || ir2 == true || ir3 == true || ir4 == false || ir5 == false )
 		return 1; // 1 - Sharp Left
-	if(ir1 == 0 || ir2 == 0 || ir3 == 1 || ir4 == 1 || ir5 == 1)
+	if(ir1 == false || ir2 == false || ir3 == true || ir4 == true || ir5 == true )
 	return 2;	// 2 - Sharp Right
-	if(ir1 == 0 || ir2 == 1 || ir3 == 1 || ir4 == 0 || ir5 == 0)
+	if(ir1 == false || ir2 == true || ir3 == true || ir4 == false || ir5 == false )
 	return 3; // 3- Smooth Left
-	if(ir1 == 0 || ir2 == 0 || ir3 == 1 || ir4 == 1 || ir5 == 0)
+	if(ir1 == false || ir2 == false || ir3 == true || ir4 == true || ir5 == false)
 	return 4;	// 4 - Smooth Right
-	if((ir1 == 0 || ir2 == 1 || ir3 == 1 || ir4 == 0 || ir5 == 1)|| (ir1 == 0 || ir2 == 1 || ir3 == 1 || ir4 == 1 || ir5 == 0)
-	||  (ir1 == 0 || ir2 == 1 || ir3 == 1 || ir4 == 1 || ir5 == 1)||(ir1 == 1 || ir2 == 0 || ir3 == 1 || ir4 == 1 || ir5 == 0)
-	||	(ir1 == 1 || ir2 == 0 || ir3 == 1 || ir4 == 1 || ir5 == 1)||(ir1 == 1 || ir2 == 1|| ir3 == 1 || ir4 == 0|| ir5 == 1)
-	||	(ir1 == 1 || ir2 == 1 || ir3 == 1 || ir4 == 1 || ir5 == 0)||(ir1 == 1|| ir2 == 1|| ir3 == 1 || ir4 == 1 || ir5 == 1)
+	if((ir1 == false || ir2 ==  true || ir3 ==  true || ir4 == false || ir5 ==  true)|| (ir1 == false || ir2 ==  true || ir3 ==  true || ir4 ==  true || ir5 == false)
+	||  (ir1 == false || ir2 ==  true || ir3 ==  true || ir4 ==  true || ir5 ==  true)||(ir1 ==  true || ir2 == false || ir3 ==  true || ir4 ==  true || ir5 == false)
+	||	(ir1 ==  true || ir2 == false || ir3 ==  true || ir4 ==  true || ir5 ==  true)||(ir1 ==  true || ir2 ==  true|| ir3 == true || ir4 == false|| ir5 ==  true)
+	||	(ir1 ==  true || ir2 ==  true || ir3 ==  true || ir4 ==  true || ir5 == false)||(ir1 ==  true|| ir2 ==  true|| ir3 ==  true || ir4 ==  true || ir5 ==  true)
 	)
 		return 5;
-	else 
+		
+	else
 		return 10;
+	
 }
 
 
@@ -122,13 +128,12 @@ int main(void)
 		
 		int interpret = 0;
 			// Getting Current State of Each IR Sensor
-		
-	    	ir1 = bit_is_set(PIND,2);
-		ir2 = bit_is_set(PIND,3);
-	    	ir3 = bit_is_set(PIND,4);
-		ir4 = bit_is_set(PIND,5);
-		ir5 = bit_is_set(PIND,6);
-		
+		ir1 = 	bit_is_clear(PIND,2);
+		ir2 = 	bit_is_clear(PIND,3);
+		ir3 = 	bit_is_clear(PIND,4);
+		ir4 = 	bit_is_clear(PIND,5);
+		ir5 = 	bit_is_clear(PIND,6); 
+			
 		// Now Checking Logic for Vehicle Running Setup
 		interpret = get_motor_state(ir1,ir2,ir3,ir4,ir5);
 		/* 
