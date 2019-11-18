@@ -24,17 +24,14 @@ const int false = 0;
 	3 - Smooth Left
 	4 - Smooth Right
 	5 - Stop
-
 */ 
 // Type 1 - Left || 
 // Type 0 - Right
 
 /*
-
 dir 1 - forward
 dir 2 - stop
 dir 3 - rev
-
 */ 
 
 /*  ---- ONLY FOR IR Sensor ----  */
@@ -71,7 +68,7 @@ void set_motor(int type,int dir){
 		
 		}
 		
-		if(dir == 2){ // Stop Motor
+		if(dir == 2){ // Stop Motor 
 			
 			right_motor_line1 = 0;
 			right_motor_line2 = 0;
@@ -106,6 +103,7 @@ int get_motor_state(int ir1,int ir2,int ir3,int ir4,int ir5){
 	||  (ir1 == false || ir2 ==  true || ir3 ==  true || ir4 ==  true || ir5 ==  true)||(ir1 ==  true || ir2 == false || ir3 ==  true || ir4 ==  true || ir5 == false)
 	||	(ir1 ==  true || ir2 == false || ir3 ==  true || ir4 ==  true || ir5 ==  true)||(ir1 ==  true || ir2 ==  true|| ir3 == true || ir4 == false|| ir5 ==  true)
 	||	(ir1 ==  true || ir2 ==  true || ir3 ==  true || ir4 ==  true || ir5 == false)||(ir1 ==  true|| ir2 ==  true|| ir3 ==  true || ir4 ==  true || ir5 ==  true)
+	|| (ir1 == false || ir2 == false || ir3 == false || ir4 == false || ir5 == false)
 	)
 		return 5;
 		
@@ -119,7 +117,7 @@ int main(void)
 {
    
    DDRA = 0b11110000;//output(last four pins of A)
-   DDRD = 0b01111100;//input (sensor)
+   DDRD = 0b00000000;//input (sensor)
    
    
 
@@ -128,11 +126,11 @@ int main(void)
 		
 		int interpret = 0;
 			// Getting Current State of Each IR Sensor
-		ir1 = 	bit_is_clear(PIND,2);
-		ir2 = 	bit_is_clear(PIND,3);
-		ir3 = 	bit_is_clear(PIND,4);
-		ir4 = 	bit_is_clear(PIND,5);
-		ir5 = 	bit_is_clear(PIND,6); 
+		ir1 = bit_is_clear(PIND,6);
+		ir2 = bit_is_clear(PIND,5);
+		ir3 = bit_is_clear(PIND,4);
+		ir4 = bit_is_clear(PIND,3);
+		ir5 = bit_is_clear(PIND,2);
 			
 		// Now Checking Logic for Vehicle Running Setup
 		interpret = get_motor_state(ir1,ir2,ir3,ir4,ir5);
@@ -143,7 +141,6 @@ int main(void)
 	3 - Smooth Left
 	4 - Smooth Right
 	5 - Stop
-
 */
 		if(interpret == 0){ // Straight
 			set_motor(1,1);
@@ -174,4 +171,3 @@ int main(void)
 
 return 0;	
 }
-
